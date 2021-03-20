@@ -1,0 +1,34 @@
+.list {
+    list-style-type: none;
+    padding: 0px;
+}
+body{
+    background-color: #1d1b26;
+    color:white;
+}
+.list li {
+    font-size: 1em;
+}
+.list div{
+    padding:10px;
+}
+
+.list li div:hover{
+    background-color: rgb(53, 50, 50);
+}
+
+.ui.menu{
+    border: 0px;
+    background-color: transparent;
+}
+
+.nav-icon{
+    background-color: transparent;
+    border:0px;
+    padding: 3px;
+    border-radius:5px;
+    color:#adadad;
+}
+.nav-icon:hover{
+    background-color: rgb(53, 50, 50);
+}
