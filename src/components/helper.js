@@ -1,22 +1,52 @@
 export const initalizeDirectoryStructure = () => {
     const directoryTree = {
         home: {
-            Air_Drop:{},
+            Air_Drop: {},
             Recents: {},
             Applications: {},
             Downloads: {},
             Amitabh: {},
             Music: {
-                Pink_Floyd:{},
-                White_Snakes:{},
-                Pantera:{}
+                Pink_Floyd: {
+                    Album1: {
+                        Wallpapers: {
+
+                        },
+                        Songs: {
+
+                        }
+                    }
+                },
+                White_Snakes: {
+                    Album2: {
+                        Wallpapers: {
+
+                        },
+                        Songs: {
+
+                        }
+                    }
+                },
+                Pantera: {
+                    Album3: {
+                        Wallpapers: {
+
+                        },
+                        Songs: {
+
+                        }
+                    }
+                }
             },
-            Movies: {},
+            Movies: {
+                Action: {},
+                Comedy: {}
+            },
             Creative_Cloud_Files: {}
-            }
+        }
     }
-    if(!localStorage.getItem('directoryTree')){
-            localStorage.setItem('directoryTree',directoryTree);
+    if (!localStorage.getItem('directoryTree')) {
+        localStorage.setItem('directoryTree', directoryTree);
     }
     return directoryTree;
 }

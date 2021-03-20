@@ -21,7 +21,9 @@ body{
     border: 0px;
     background-color: transparent;
 }
-
+.active{
+    background-color: rgb(53, 50, 50);
+}
 .nav-icon{
     background-color: transparent;
     border:0px;

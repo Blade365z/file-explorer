@@ -1,6 +1,13 @@
-import React from 'react'
+import React,{useEffect, useState} from 'react'
 
-const FavouriteList = () => {
+const FavouriteList = (props) => {
+    const [currentlySelected, setcurrentlySelected] = useState(null);
+    useEffect(()=>{
+       setcurrentlySelected(props.defaultSelected);
+    })
+    const handleSideBarClick = (selected) => {
+            props.onSelect(selected);
+    }
     const favourites  = [
         {
             name:'Air_Drop',
@@ -34,8 +41,6 @@ const FavouriteList = () => {
             icon: 'folder  icon'
         },
 
-        
-
 ]
     return (
         <div>
@@ -44,8 +49,8 @@ const FavouriteList = () => {
             <div style={{fontWeight:'bold',color:'#adadad'}}>Favourites</div>
             {
                 favourites.map(favourite=>{
-                    return <li   key={favourite.name} className='list-items'>
-                        <div style={{display:'flex'}} onClick={()=>{console.log(favourite.name)}}>
+                    return <li   key={favourite.name} className={favourite.name===currentlySelected? 'list-items active' : 'list-items'}>
+                        <div style={{display:'flex'}} onClick={()=>{handleSideBarClick(favourite.name)}}>
                                 <i className={favourite.icon} style={{marginRight:'10px', color:'rgb(0, 162, 255)'}}></i>
                                 <span className="content" style={{color:'white'}}>
                               {favourite.name.replace('_',' ')}
