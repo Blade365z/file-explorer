@@ -34,3 +34,22 @@ body{
 .nav-icon:hover{
     background-color: rgb(53, 50, 50);
 }
+.folder-large{
+    margin: 10px 10px 20px 10px;
+    text-align: center;
+}
+.folder-large i {    
+    padding:5px;
+    font-size: 5em;
+}
+
+.folder-large i:hover{    
+    color:rgb(197, 197, 197)
+}
+.folder-name{
+    margin-top: -20px;
+}
+.explorer{
+    display: grid;
+    grid-template-columns: repeat(8,1fr);
+}
