@@ -6,9 +6,9 @@ import IcloudList from './IcloudList';
 import { initalizeDirectoryStructure } from './helper';
 import { Nav } from './Nav';
 import Explorer from './Explorer';
+var directoryTree = initalizeDirectoryStructure();
 
 const App = () => {
-    var directoryTree = initalizeDirectoryStructure();
     //Keep Track of the directory
     const [DirectoryStack, setDirectoryStack] = useState(Array(['17772']));
     const [CurrentDirectoryList, setCurrentDirectoryList] = useState([]);
@@ -158,7 +158,43 @@ const App = () => {
         let dirGrabbed = e.dataTransfer.getData("dir");
         if (dirGrabbed !== dir) {
             console.log(dirGrabbed)
+            //Logic comes here
+            let row = DirectoryPointerRow;
+            let offset = DirectoryPointerOffset;
+            let dirStackTemp = DirectoryStack.map(e => e);
+            let path = dirStackTemp[row].slice(0, offset + 1);
+            console.log('Taget: ', dirGrabbed);
+            console.log('Where: ', dir);
+            // path.push(dirGrabbed);
+            var grabbedDirectories = traceDirectories(path)
+            path.pop();
+            moveToDirectory(dirGrabbed, grabbedDirectories, dir);
         }
+    }
+    const moveToDirectory = (dir, dirObj, targetDir) => {
+        // directly mutate in directoryTree and set DirectoryStack
+        let baseDir = dirObj[dir];
+        //traversing the directory tree.
+        function iter(directoryTreeArr) {
+            Object.keys(directoryTreeArr).forEach(function (k) {
+                //move the directory to target context
+                if (k === targetDir) {
+                    directoryTreeArr[k]['child'][dir] = baseDir;
+                    return;
+                }
+                //remove original
+                if (k === dir) {
+                    delete directoryTreeArr[k];
+                }
+                if (directoryTreeArr[k] !== null && typeof directoryTreeArr[k] === 'object') {
+                    //reccursively traversing the directory Tree (Nested Object)
+                    iter(directoryTreeArr[k]);
+                    return;
+                }
+            });
+            return directoryTreeArr;
+        }
+        directoryTree = iter(directoryTree)
     }
     const dragEndHandler = (e, dir) => {
         setDraggedDirs({
@@ -166,6 +202,7 @@ const App = () => {
             target: null
         })
     }
+
     const dragLeaveHandle = () => {
         setDraggedDirs({
             grabbed: DraggedDirs.grabbed,

@@ -20,7 +20,7 @@ const Explorer = (props) => {
                     onDragEnd={(e) => { props.dragEndHandler(e, name[0]) }}
                     onDragLeave={(e)=>{props.dragLeaveHandle(e,name[0])}}>
              
-                    <i className={name[0]===props.DraggedOverIcon ?"folder open icon": "folder icon"}></i>
+                    <i style={{marginTop:'10px'}}className={name[0]===props.DraggedOverIcon ?"folder open icon": "folder icon"}></i>
                     <div className="folder-name">
                         {DirList[name[0]]['name']}
                     </div>
