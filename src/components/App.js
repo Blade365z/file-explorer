@@ -6,6 +6,7 @@ import IcloudList from './IcloudList';
 import { initalizeDirectoryStructure } from './helper';
 import { Nav } from './Nav';
 import Explorer from './Explorer';
+import NewFolder from './NewFolder';
 var directoryTree = initalizeDirectoryStructure();
 
 const App = () => {
@@ -25,7 +26,7 @@ const App = () => {
     useEffect(() => {
         let temp = traceDirectories(DirectoryStack[0]);
         setCurrentDirectoryList(temp)
-    }, [DirectoryStack]);
+    }, []);
 
     const sideBarSelect = (tab) => {
         setselected(tab); //Selected SideBarTab
@@ -210,24 +211,39 @@ const App = () => {
         })
     }
 
+
+    //Create New Folder
+
+
+
+
+
+
+
+
+
+
     return (
-        <div >
-            <div className="ui left vertical menu sidebar animating visible" style={{ backgroundColor: '#424146' }}>
-                <FavouriteList defaultSelected={selected} onSelect={sideBarSelect} />
-                <IcloudList />
-            </div>
-            <div className="pusher">
-                <Nav onGoBack={handleGoBack} onGoForward={handleGoForward} />
-                <Explorer
-                    DraggedOverIcon={DraggedDirs.target}
-                    directories={CurrentDirectoryList}
-                    exploreFolder={exploreFolder}
-                    dragStartHandler={dragStartHandler}
-                    dragOverHandler={dragOverHandler}
-                    dragOnHandler={dragOnHandler}
-                    dragEndHandler={dragEndHandler}
-                    dragLeaveHandle={dragLeaveHandle}
-                />
+        <div  >
+            <NewFolder />
+            <div  className="wrapper">
+                <div className="sidebar">
+                    <FavouriteList defaultSelected={selected} onSelect={sideBarSelect} />
+                    <IcloudList />
+                </div>
+                <div className="pusher">
+                    <Nav onGoBack={handleGoBack} onGoForward={handleGoForward} />
+                    <Explorer
+                        DraggedOverIcon={DraggedDirs.target}
+                        directories={CurrentDirectoryList}
+                        exploreFolder={exploreFolder}
+                        dragStartHandler={dragStartHandler}
+                        dragOverHandler={dragOverHandler}
+                        dragOnHandler={dragOnHandler}
+                        dragEndHandler={dragEndHandler}
+                        dragLeaveHandle={dragLeaveHandle}
+                    />
+                </div>
             </div>
         </div>
     )
