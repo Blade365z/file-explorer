@@ -22,11 +22,17 @@ const Explorer = (props) => {
     }
     useEffect(() => {
         setDirList(props.directories);
+
     }, [props.directories])
+    useEffect(() => {
+        document.addEventListener('click', function () {
+            setShowMenu(false);
+        })
+    })
     return (
         <div className="explorer">
             { DirList && Object.entries(DirList).map((name, value) => {
-                return <div key={name}>    <div  className="folder-large"
+                return <div key={name}>    <div className="folder-large"
                     draggable
                     onClick={() => { handleFolderClick(name[0]) }}
                     onDragStart={(e) => { props.dragStartHandler(e, name[0]) }}
@@ -35,16 +41,16 @@ const Explorer = (props) => {
                     onDragEnd={(e) => { props.dragEndHandler(e, name[0]) }}
                     onDragLeave={(e) => { props.dragLeaveHandle(e, name[0]) }}>
 
-                    <i onContextMenu={(e) => { openContextMenu(e)}}  ref={outerRef} style={{ marginTop: '10px' }} className={name[0] === props.DraggedOverIcon ? "folder open icon" : "folder icon"}></i>
+                    <i onContextMenu={(e) => { openContextMenu(e) }} ref={outerRef} style={{ marginTop: '10px' }} className={name[0] === props.DraggedOverIcon ? "folder open icon" : "folder icon"}></i>
                     <div className="folder-name">
                         {DirList[name[0]]['name']}
                     </div>
 
                 </div>
-                  <div className="menu" style={{top:MenuY+5,left:MenuX,position:'absolute',backgroundColor:'#FFFF',color:'black'}}>
+                    {showMenu && <div className="menu" style={{ top: MenuY + 5, left: MenuX, position: 'absolute', backgroundColor: '#FFFF', color: 'black' }}>
                         <ul className="context-menu">
-                            <li className="item">
-                                Rename
+                            <li className="item" onClick={()=>{console.log(name[0])}}>
+                                Rename...
                             </li>
                             <li className="item">
                                 Delete
@@ -53,7 +59,7 @@ const Explorer = (props) => {
                                 Create New
                             </li>
                         </ul>
-                  </div>
+                    </div>}
                 </div>
             })}
 
