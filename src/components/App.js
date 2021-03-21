@@ -73,7 +73,6 @@ const App = () => {
     }
     const traceDirectories = (traceArr) => {
         let temp = [];
-        console.log(traceArr)
         for (let i = 0; i < traceArr.length; i++) {
             if (i === 0) {
                 temp = directoryTree['home'][traceArr[i]]['child'];
@@ -89,9 +88,10 @@ const App = () => {
         let offset = DirectoryPointerOffset;
         let dirStackTemp = DirectoryStack.map(e => e);
         if (offset === 0 && row === 0) {
+            console.log('Back Reached!')
             //TODO::DISABLE BACK BUTTON
         } else {
-            if (row!==0 && offset === 0) {
+            if (row !== 0 && offset === 0) {
                 row -= 1;
                 setDirectoryPointerRow(row);
                 offset = dirStackTemp[row].length - 1;
@@ -107,6 +107,31 @@ const App = () => {
             }
         }
     }
+    const handleGoForward = () => {
+        let row = DirectoryPointerRow;
+        let offset = DirectoryPointerOffset;
+        let dirStackTemp = DirectoryStack.map(e => e);
+        if (row === dirStackTemp.length - 1 && offset === dirStackTemp[row].length - 1) {
+                console.log('Forward Reached!')
+                   //TODO::DISABLE FORWARD BUTTON
+        } else {
+            if (row !== dirStackTemp.length - 1 && offset === dirStackTemp[row].length - 1){
+                row += 1;
+                setDirectoryPointerRow(row);
+                offset = 0;
+                setDirectoryPointerOffset(offset);
+                let path = dirStackTemp[row].slice(0,offset+1)
+                let temp = traceDirectories(path);
+                setCurrentDirectoryList(temp)
+            }else{
+                offset = offset + 1 ;
+                let path = dirStackTemp[row].slice(0, offset+1);
+                setDirectoryPointerOffset(offset);
+                let temp = traceDirectories(path);
+                setCurrentDirectoryList(temp)
+            }
+        }
+    }
     return (
         <div >
             <div className="ui left vertical menu sidebar animating visible" style={{ backgroundColor: '#424146' }}>
@@ -114,10 +139,10 @@ const App = () => {
                 <IcloudList />
             </div>
             <div className="pusher">
-                <Nav onGoBack={handleGoBack} />
+                <Nav onGoBack={handleGoBack} onGoForward={handleGoForward} />
                 <Explorer directories={CurrentDirectoryList} exploreFolder={exploreFolder} />
             </div>
         </div>
-    )
+    )   
 }
 export default App;
