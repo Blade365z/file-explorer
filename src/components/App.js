@@ -17,7 +17,10 @@ const App = () => {
 
 
     const [selected, setselected] = useState('Amitabh')
-
+    const [DraggedDirs, setDraggedDirs] = useState({
+        grabbed: null,
+        target: null
+    });
 
     useEffect(() => {
         let temp = traceDirectories(DirectoryStack[0]);
@@ -112,26 +115,64 @@ const App = () => {
         let offset = DirectoryPointerOffset;
         let dirStackTemp = DirectoryStack.map(e => e);
         if (row === dirStackTemp.length - 1 && offset === dirStackTemp[row].length - 1) {
-                console.log('Forward Reached!')
-                   //TODO::DISABLE FORWARD BUTTON
+            console.log('Forward Reached!')
+            //TODO::DISABLE FORWARD BUTTON
         } else {
-            if (row !== dirStackTemp.length - 1 && offset === dirStackTemp[row].length - 1){
+            if (row !== dirStackTemp.length - 1 && offset === dirStackTemp[row].length - 1) {
                 row += 1;
                 setDirectoryPointerRow(row);
                 offset = 0;
                 setDirectoryPointerOffset(offset);
-                let path = dirStackTemp[row].slice(0,offset+1)
+                let path = dirStackTemp[row].slice(0, offset + 1)
                 let temp = traceDirectories(path);
                 setCurrentDirectoryList(temp)
-            }else{
-                offset = offset + 1 ;
-                let path = dirStackTemp[row].slice(0, offset+1);
+            } else {
+                offset = offset + 1;
+                let path = dirStackTemp[row].slice(0, offset + 1);
                 setDirectoryPointerOffset(offset);
                 let temp = traceDirectories(path);
                 setCurrentDirectoryList(temp)
             }
         }
     }
+
+    //Draggable Logic 
+    const dragStartHandler = (e, dir) => {
+        setDraggedDirs({
+            grabbed: dir,
+            target: null
+        })
+        e.dataTransfer.setData("dir", dir);
+    }
+
+    const dragOverHandler = (e, dir) => {
+        e.preventDefault();
+        if (DraggedDirs.grabbed !== dir) {
+            setDraggedDirs({
+                grabbed: DraggedDirs.grabbed,
+                target: dir
+            });
+        }
+    }
+    const dragOnHandler = (e, dir) => {
+        let dirGrabbed = e.dataTransfer.getData("dir");
+        if (dirGrabbed !== dir) {
+            console.log(dirGrabbed)
+        }
+    }
+    const dragEndHandler = (e, dir) => {
+        setDraggedDirs({
+            grabbed: null,
+            target: null
+        })
+    }
+    const dragLeaveHandle = () => {
+        setDraggedDirs({
+            grabbed: DraggedDirs.grabbed,
+            target: null
+        })
+    }
+
     return (
         <div >
             <div className="ui left vertical menu sidebar animating visible" style={{ backgroundColor: '#424146' }}>
@@ -140,9 +181,18 @@ const App = () => {
             </div>
             <div className="pusher">
                 <Nav onGoBack={handleGoBack} onGoForward={handleGoForward} />
-                <Explorer directories={CurrentDirectoryList} exploreFolder={exploreFolder} />
+                <Explorer
+                    DraggedOverIcon={DraggedDirs.target}
+                    directories={CurrentDirectoryList}
+                    exploreFolder={exploreFolder}
+                    dragStartHandler={dragStartHandler}
+                    dragOverHandler={dragOverHandler}
+                    dragOnHandler={dragOnHandler}
+                    dragEndHandler={dragEndHandler}
+                    dragLeaveHandle={dragLeaveHandle}
+                />
             </div>
         </div>
-    )   
+    )
 }
 export default App;
