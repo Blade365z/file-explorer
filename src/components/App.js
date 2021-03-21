@@ -56,9 +56,9 @@ const App = () => {
             let offset = DirectoryPointerOffset;
             let row = DirectoryPointerRow;
             let dirStackTemp = DirectoryStack;
-            if (offset !== dirStackTemp[row].length-1) {
-                dirStackTemp[row] =  dirStackTemp[row].slice(0,offset+1);
-                offset = dirStackTemp[row].length-1;
+            if (offset !== dirStackTemp[row].length - 1) {
+                dirStackTemp[row] = dirStackTemp[row].slice(0, offset + 1);
+                offset = dirStackTemp[row].length - 1;
                 setDirectoryPointerOffset(offset);
             }
             dirStackTemp[row].push(dir);
@@ -73,6 +73,7 @@ const App = () => {
     }
     const traceDirectories = (traceArr) => {
         let temp = [];
+        console.log(traceArr)
         for (let i = 0; i < traceArr.length; i++) {
             if (i === 0) {
                 temp = directoryTree['home'][traceArr[i]]['child'];
@@ -87,22 +88,24 @@ const App = () => {
         let row = DirectoryPointerRow;
         let offset = DirectoryPointerOffset;
         let dirStackTemp = DirectoryStack.map(e => e);
-        if (offset === 0) {
-            row -= 1;
-            setDirectoryPointerRow(row);
-            offset = dirStackTemp[row].length - 1;
-            setDirectoryPointerOffset(offset);
-            let temp = traceDirectories(dirStackTemp[row]);
-            setCurrentDirectoryList(temp)
+        if (offset === 0 && row === 0) {
+            //TODO::DISABLE BACK BUTTON
         } else {
-            let path = dirStackTemp[row].slice(0, offset);
-            offset = offset - 1;
-            setDirectoryPointerOffset(offset);
-            let temp = traceDirectories(path);
-            setCurrentDirectoryList(temp)
+            if (row!==0 && offset === 0) {
+                row -= 1;
+                setDirectoryPointerRow(row);
+                offset = dirStackTemp[row].length - 1;
+                setDirectoryPointerOffset(offset);
+                let temp = traceDirectories(dirStackTemp[row]);
+                setCurrentDirectoryList(temp)
+            } else {
+                let path = dirStackTemp[row].slice(0, offset);
+                offset = offset - 1;
+                setDirectoryPointerOffset(offset);
+                let temp = traceDirectories(path);
+                setCurrentDirectoryList(temp)
+            }
         }
-
-
     }
     return (
         <div >
