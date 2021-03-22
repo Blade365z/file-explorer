@@ -25,9 +25,15 @@ const App = () => {
 
     useEffect(() => {
         let temp = traceDirectories(DirectoryStack[0]);
-        setCurrentDirectoryList(temp)
+        setCurrentDirectoryList(temp);
+        // document.addEventListener('contextmenu',function(e){
+        //     e.preventDefault();
+        // })
     }, []);
+    useEffect(() => {
+        getDirectoryNames(DirectoryStack[DirectoryPointerRow])
 
+    })
     const sideBarSelect = (tab) => {
         setselected(tab); //Selected SideBarTab
         exploreFolder(tab)
@@ -217,6 +223,24 @@ const App = () => {
 
 
 
+    const getDirectoryNames = (traceArr) => {
+        let tempTrack = [];
+        let DirNames = [];
+        for (let i = 0; i < traceArr.length; i++) {
+            if (i === 0) {
+                tempTrack = directoryTree['home'][traceArr[i]]['child'];
+                DirNames.push(directoryTree['home'][traceArr[i]]['name'])
+            } else {
+                if (tempTrack[traceArr[i]]) {
+                    let dir = tempTrack[traceArr[i]]['name']
+                    DirNames.push(dir)
+                }
+            }
+        }
+        DirNames = DirNames.slice(0, DirectoryPointerOffset + 1); // To filter directory path  only upto current Offset
+        return DirNames;
+    }
+
 
 
 
@@ -226,14 +250,14 @@ const App = () => {
     return (
         <div  >
             <NewFolder />
-            <div  className="wrapper">
+            <div className="wrapper">
                 <div className="sidebar">
-                    
+
                     <FavouriteList defaultSelected={selected} onSelect={sideBarSelect} />
                     <IcloudList />
                 </div>
                 <div className="pusher">
-                    <Nav onGoBack={handleGoBack} onGoForward={handleGoForward} />
+                    <Nav onGoBack={handleGoBack} onGoForward={handleGoForward} currentPath={'heello'} />
                     <Explorer
                         DraggedOverIcon={DraggedDirs.target}
                         directories={CurrentDirectoryList}
