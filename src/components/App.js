@@ -228,6 +228,7 @@ const App = () => {
             <NewFolder />
             <div  className="wrapper">
                 <div className="sidebar">
+                    
                     <FavouriteList defaultSelected={selected} onSelect={sideBarSelect} />
                     <IcloudList />
                 </div>
