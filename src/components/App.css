@@ -1,6 +1,7 @@
 .wrapper{
     display:flex;
     height:100%;
+    width:100%;
     position:fixed;
 }
 .sidebar{
@@ -26,7 +27,7 @@ body{
 
 .list li div:hover{
     border-radius:4px;
-    background-color: rgb(53, 50, 50);
+    background-color: rgb(163, 160, 160);
 }
 
 .ui.menu{
@@ -44,14 +45,28 @@ body{
     border-radius:5px;
     color:#adadad;
 }
-.nav-icon:hover{
+/* .folder-large.active i{
+   color: rgb(144, 144, 144);
+}
+.folder-large.active span{
+      color:rgb(0, 119, 255);
+} */
+.nav-tool-icon{
+    background-color: transparent;
+    border:0px;
+    font-size:1.3em;
+    padding: 8px;
+    border-radius:5px;
+    color:#adadad;
+}
+.nav-icon:hover ,.nav-tool-icon:hover{
     background-color: rgb(53, 50, 50);
 }
 .folder-large{
     margin: 10px 10px 20px 10px;
     text-align: center;
 }
-.folder-large i {    
+.explorer  .folder-large i {    
     padding:5px;
     font-size: 5em;
 }
@@ -67,6 +82,20 @@ body{
     padding:20px;
     grid-template-columns: repeat(8,1fr);
 }
+.explorer .folder-name{
+    display: block;
+}
+
+.list-explorer .folder-name{
+    font-size: 1.3em;
+}
+.list-explorer  .folder-large{    
+        text-align:left;    
+}
+.list-explorer  .folder-large i {    
+    font-size: 2em;
+}
+
 
 .context-menu{
     list-style: none;
@@ -80,8 +109,12 @@ body{
     cursor: pointer;
     border-radius: 4px;
     background-color: rgb(212, 212, 212);
-}
+    background-color: rgb(0, 180, 9);
 
+}
+.window-icon{
+    margin:0px 0px 5px 5px;
+}
 
 .modal {
     background-color: rgb(0,0,0);
@@ -112,4 +145,25 @@ body{
       padding:5px;
       border-radius: 5px;
       box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  }
+
+
+  .path-tag{
+      display: inline;
+      padding: 5px 15px 5px 15px;
+      font-size: 1em;
+      color:rgba(255, 255, 255, 0.671);
+      border:1px solid  rgba(202, 202, 202, 0.5);
+  }
+
+
+  .searchBtn-nav{
+      margin-left: auto;
+    color:rgba(255, 255, 255, 0.671);
+  }
+
+
+
+  #nav-search{
+      margin: 0px 10px 0px 0px ;
   }

@@ -57,7 +57,7 @@ const FavouriteList = (props) => {
             <div style={{fontWeight:'bold',color:'#adadad'}}>Favourites</div>
             {
                 favourites.map(favourite=>{
-                    return <li   key={favourite.name} className={favourite.name===currentlySelected? 'list-items active' : 'list-items'}>
+                    return <li   key={favourite.name} className={favourite.key===currentlySelected? 'list-items active' : 'list-items'}>
                         <div style={{display:'flex'}} onClick={()=>{handleSideBarClick(favourite.key)}}>
                                 <i className={favourite.icon} style={{marginRight:'10px', color:'rgb(0, 162, 255)'}}></i>
                                 <span className="content" style={{color:'white'}}>

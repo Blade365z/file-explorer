@@ -54,22 +54,31 @@ const Explorer = (props) => {
     }, [])
     const handleRenameInputChange = (input) => {
         setRightClickedFor({
-            name:input,
-            key:rightClickedFor.key
+            name: input,
+            key: rightClickedFor.key
         })
         setNewName(input)
     }
     const submitRenameForm = (e) => {
         e.preventDefault();
+        setShowRenameMenu(false);
+        setNewName(null);
         props.renameDirectory(newName, rightClickedFor.key)
     }
 
-
+    var count = 0;
     return (
-        <div className="explorer">
-            { DirList && Object.entries(DirList).map((name, value) => {
-                return <div key={name}>    <div className="folder-large"
+        <div className={props.gridMode ? "explorer" : "list-explorer"}>
+
+            { Object.entries(DirList).length > 0 ? Object.entries(DirList).map((name, value) => {
+                if (props.searchKeyword) {
+                    if (!DirList[name[0]]['name'].toLowerCase().includes(props.searchKeyword.toLowerCase()))
+                        return;
+                }
+                count += 1;
+                return <div key={name[0]}>    <div className={props.selectedDirecrtory === name[0] ? "folder-large active" : "folder-large"}
                     draggable
+                    onClick={() => { props.handleSelectDirectory(name[0]) }}
                     onDoubleClick={() => { handleFolderClick(name[0]) }}
                     onDragStart={(e) => { props.dragStartHandler(e, name[0]) }}
                     onDragOver={(e) => { props.dragOverHandler(e, name[0]) }}
@@ -77,22 +86,24 @@ const Explorer = (props) => {
                     onDragEnd={(e) => { props.dragEndHandler(e, name[0]) }}
                     onDragLeave={(e) => { props.dragLeaveHandle(e, name[0]) }}>
 
-                    <i onContextMenu={(e) => { openContextMenu(e, name[0], DirList[name[0]]['name']) }} style={{ marginTop: '10px' }} className={name[0] === props.DraggedOverIcon ? "folder open icon" : "folder icon"}></i>
-                    <div className="folder-name">
+                    <i onContextMenu={(e) => { openContextMenu(e, name[0], DirList[name[0]]['name']) }} style={{ marginTop: '12px' }} className={name[0] === props.DraggedOverIcon ? "folder open icon" : "folder icon"}></i>
+                    <span className="folder-name">
                         {DirList[name[0]]['name']}
-                    </div>
+                    </span>
 
                 </div>
 
                 </div>
+            }) : <div style={{ textAlign: "center" }}><h3>Folder is Empty.</h3></div>
+
             }
-            )}
+            {props.searchKeyword && count === 0 && <div>Not Found.</div>}
             {showMenu && <div className="menu" style={{ top: MenuY + 5, left: MenuX, position: 'absolute', backgroundColor: '#FFFF', color: 'black' }}>
                 <ul className="context-menu" >
                     <li className="item" onClick={() => { setShowRenameMenu(true) }}>
                         Rename...
                             </li>
-                    <li className="item">
+                    <li className="item" onClick={() => { props.deleteDirectory(rightClickedFor.key) }}>
                         Delete
                             </li>
                     <li className="item" onClick={() => { props.openModal() }}>

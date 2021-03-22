@@ -7,6 +7,7 @@ import { initalizeDirectoryStructure } from './helper';
 import { Nav } from './Nav';
 import Explorer from './Explorer';
 import NewFolder from './NewFolder';
+import { WindowButtons } from './WindowButtons';
 var directoryTree = initalizeDirectoryStructure();
 
 const App = () => {
@@ -18,32 +19,46 @@ const App = () => {
     const [DirectoryPointerRow, setDirectoryPointerRow] = useState(0);
 
 
-    const [selected, setselected] = useState('Amitabh')
+    const [selectedSideBarTab, setselectedSideBarTab] = useState('17772')
+    const [selectedDirecrtory, setselectedDirecrtory] = useState(null)
     const [DraggedDirs, setDraggedDirs] = useState({
         grabbed: null,
         target: null
     });
-    const [CreateNewFolder, setCreateNewFolder] = useState(false);
+    const [SearchKeyword, setSearchKeyword] = useState('')
 
+    const [CreateNewFolder, setCreateNewFolder] = useState(false);
+    const [GridMode, setGridMode] = useState(true);
 
 
     useEffect(() => {
         let temp = traceDirectories(DirectoryStack[0]);
         setCurrentDirectoryList(temp);
-        // document.addEventListener('contextmenu',function(e){
-        //     e.preventDefault();
-        // })
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        })
     }, []);
 
     useEffect(() => {
         getDirectoryNames(DirectoryStack[DirectoryPointerRow])
+        setSearchKeyword('')
     }, [CurrentDirectoryList])
 
-    const sideBarSelect = (tab) => {
-        setselected(tab); //Selected SideBarTab
-        exploreFolder(tab)
+    //On Icon Select 
+    const selectDirectory = (key) => {
+        setselectedDirecrtory(key);
     }
+
+    //on SideBar Select
+    const sideBarSelect = (key) => {
+        setselectedSideBarTab(key); //Selected SideBarTab
+        exploreFolder(key)
+    }
+
+
+    //Explore directory using key
     const exploreFolder = (dir) => {
+        
         if (directoryTree['home'][dir]) {
             //Means it is a home directory
             //Append the DirectoryStack
@@ -181,11 +196,12 @@ const App = () => {
             processDirectoryTree(dirGrabbed, grabbedDirectories[dirGrabbed], dir, false, true);
         }
     }
-    const processDirectoryTree = (dir = null, baseDir, targetDir, insertFlag = false, filterFLag = false, renameFlag = false) => {
+    const processDirectoryTree = (dir = null, baseDir, targetDir, insertFlag = false, filterDuplicatesFLag = false, renameFlag = false, deleteOnlyFlag) => {
         // directly mutate in directoryTree and set DirectoryStack
         if (insertFlag) {
             dir = Math.floor(Date.now() / 1000); // Assigning key to new folder
         }
+        console.log()
         //traversing the directory tree.,
         function iter(directoryTreeArr) {
             Object.keys(directoryTreeArr).forEach(function (k) {
@@ -197,10 +213,14 @@ const App = () => {
                     } else if (renameFlag) {
                         directoryTreeArr[k]['name'] = dir;
                         return;
+                    } else if (deleteOnlyFlag) {
+                        delete directoryTreeArr[k];
                     }
+
                 }
                 //remove original
-                if (k === dir && filterFLag === true) {
+
+                if (k === dir && filterDuplicatesFLag === true) {
                     delete directoryTreeArr[k];
                 }
                 if (directoryTreeArr[k] !== null && typeof directoryTreeArr[k] === 'object') {
@@ -229,7 +249,7 @@ const App = () => {
 
 
 
-
+    //Grab all underlying directories based on a path, path = array elements    
     const getDirectoryNames = (traceArr) => {
         let tempTrack = [];
         let DirNames = [];
@@ -275,22 +295,46 @@ const App = () => {
         processDirectoryTree(newName, null, target, false, false, true);
     }
 
+    //Delete directory Logic
+    const deleteDirectory = (target) => {
+        processDirectoryTree(null, null, target, false, false, false, true);
+    }
+
+    const changeView = () => {
+        setGridMode(!GridMode)
+    }
+
+    const handleSearch = (keyword) => {
+        setSearchKeyword(keyword)
+    }
+
+
     return (
         <div  >
             <NewFolder
                 openModal={CreateNewFolder}
                 cancelCreate={handleCloseNewFolderModal}
                 createFolder={createNewFolder}
+
             />
             <div className="wrapper">
                 <div className="sidebar">
-
-                    <FavouriteList defaultSelected={selected} onSelect={sideBarSelect} />
+                    <WindowButtons />
+                    <FavouriteList defaultSelected={selectedSideBarTab} onSelect={sideBarSelect} />
                     <IcloudList />
                 </div>
-                <div className="pusher">
-                    <Nav onGoBack={handleGoBack} onGoForward={handleGoForward} currentPath={Path} />
+                <div className="pusher" style={{ width: '100%' }}>
+                    <Nav
+                        onGoBack={handleGoBack}
+                        onGoForward={handleGoForward}
+                        currentPath={Path}
+                        gridMode={GridMode}
+                        changeView={changeView}
+                        handleSearch={handleSearch}
+                    />
                     <Explorer
+                        selectedDirecrtory={selectedDirecrtory}
+                        handleSelectDirectory={selectDirectory}
                         DraggedOverIcon={DraggedDirs.target}
                         directories={CurrentDirectoryList}
                         exploreFolder={exploreFolder}
@@ -301,6 +345,9 @@ const App = () => {
                         dragLeaveHandle={dragLeaveHandle}
                         openModal={handleOpenNewFolderModal}
                         renameDirectory={renameDirectory}
+                        deleteDirectory={deleteDirectory}
+                        gridMode={GridMode}
+                        searchKeyword={SearchKeyword}
                     />
                 </div>
             </div>

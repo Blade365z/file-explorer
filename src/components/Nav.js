@@ -2,7 +2,7 @@ import React from 'react'
 import PathBox from './PathBox';
 
 export const Nav = (props) => {
-    const handleClick = (type) => {
+    const handleNavigationClick = (type) => {
         switch (type) {
             case 'back':
                 props.onGoBack();
@@ -19,14 +19,26 @@ export const Nav = (props) => {
         <div className="ui menu">
             <div className="item">
                 <div style={{ display: 'flex', fontSize: '2em' }}>
-                    <div className="ui nav-icon" title="Go Back" onClick={() => { handleClick('back') }}><i className="angle left icon "></i></div>
-                    <div className="ui nav-icon" title="Go Forward" onClick={() => { handleClick('forward') }}><i className="angle right icon "></i></div>
+                    <div className="ui nav-icon" title="Go Back" onClick={() => { handleNavigationClick('back') }}><i className="angle left icon "></i></div>
+                    <div className="ui nav-icon" title="Go Forward" onClick={() => { handleNavigationClick('forward') }}><i className="angle right icon "></i></div>
 
                 </div>
             </div>
             <div className="item">
-                <PathBox currentPath={props.currentPath}/>
+                <PathBox currentPath={props.currentPath} />
             </div>
+            <div className="item" style={{ marginLeft: 'auto' }}>
+                <div className="ui  input" id="nav-search">
+                    <input type="text" placeholder="Search Directories" onChange={(e)=>props.handleSearch(e.target.value.trim())} />
+                </div>
+                <div className="searchBtn-nav nav-tool-icon"  >
+                    <i className="search icon"></i>
+                </div>
+                <div className="ui nav-tool-icon dropdown" onClick={() => { props.changeView() }}>
+                    {props.gridMode === true ? <i className="list icon" title="List view"></i> : <i className="th icon" title="Grid view"></i>}
+                </div>
+            </div>
+
         </div>
     )
 }
