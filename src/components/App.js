@@ -45,10 +45,27 @@ const App = () => {
         })
     }, [DirectoryStack]);
 
+
+    //To keep track of the directory path
     useEffect(() => {
-        getDirectoryNames(DirectoryStack[DirectoryPointerRow])
         setSearchKeyword('')
-    }, [CurrentDirectoryList])
+        let tempTrack = [];
+        let DirNames = [];
+        for (let i = 0; i < DirectoryStack[DirectoryPointerRow].length; i++) {
+            if (i === 0) {
+                tempTrack = directoryTree['home'][DirectoryStack[DirectoryPointerRow][i]]['child'];
+                DirNames.push(directoryTree['home'][DirectoryStack[DirectoryPointerRow][i]]['name'])
+            } else {
+                if (tempTrack[DirectoryStack[DirectoryPointerRow][i]]) {
+                    let dir = tempTrack[DirectoryStack[DirectoryPointerRow][i]]['name']
+                    tempTrack = tempTrack[DirectoryStack[DirectoryPointerRow][i]]['child']
+                    DirNames.push(dir)
+                }
+            }
+        }
+        DirNames = DirNames.slice(0, DirectoryPointerOffset + 1); // To filter directory path  only upto current Offset
+        setPath(DirNames);
+    }, [CurrentDirectoryList,DirectoryStack,DirectoryPointerRow,DirectoryPointerOffset])
 
     //On Icon Select 
     const selectDirectory = (key) => {
@@ -61,13 +78,15 @@ const App = () => {
         exploreFolder(key)
     }
 
-
+    
     //Explore directory using key
     const exploreFolder = (dir) => {
+    
         setnavigationButtonsEnabled({
             back: true,
             forward: navigationButtonsEnabled.forward
         });
+     
         if (directoryTree['home'][dir]) {
             //Means it is a home directory
             //Append the DirectoryStack
@@ -280,25 +299,10 @@ const App = () => {
 
 
     //Grab all underlying directories based on a path, path = array elements    
-    const getDirectoryNames = (traceArr) => {
-        let tempTrack = [];
-        let DirNames = [];
-        for (let i = 0; i < traceArr.length; i++) {
-            if (i === 0) {
-                tempTrack = directoryTree['home'][traceArr[i]]['child'];
-                DirNames.push(directoryTree['home'][traceArr[i]]['name'])
-            } else {
-                if (tempTrack[traceArr[i]]) {
-                    let dir = tempTrack[traceArr[i]]['name']
-                    tempTrack = tempTrack[traceArr[i]]['child']
-                    DirNames.push(dir)
-                }
-            }
-        }
-        DirNames = DirNames.slice(0, DirectoryPointerOffset + 1); // To filter directory path  only upto current Offset
-        setPath(DirNames);
-        return DirNames;
-    }
+    // const getDirectoryNames = (traceArr) => {
+       
+    //     return DirNames;
+    // }
 
 
 
