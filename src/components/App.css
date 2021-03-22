@@ -78,12 +78,12 @@ body{
 }
 .context-menu li:hover{
     cursor: pointer;
+    border-radius: 4px;
     background-color: rgb(212, 212, 212);
 }
 
 
 .modal {
-    display: none;
     background-color: rgb(0,0,0);
     background-color: rgba(0,0,0,0.4); 
     position: fixed;
@@ -94,7 +94,12 @@ body{
     height: 100%; 
     overflow: auto; 
   }
-  
+  .modal-show{
+      display: block;
+  }
+  .modal-hide{
+    display: none;
+  }
   .modal-content {
     
     border-radius:4px;

@@ -23,6 +23,9 @@ const App = () => {
         grabbed: null,
         target: null
     });
+    const [CreateNewFolder, setCreateNewFolder] = useState(false);
+
+
 
     useEffect(() => {
         let temp = traceDirectories(DirectoryStack[0]);
@@ -167,33 +170,37 @@ const App = () => {
     const dragOnHandler = (e, dir) => {
         let dirGrabbed = e.dataTransfer.getData("dir");
         if (dirGrabbed !== dir) {
-            console.log(dirGrabbed)
             //Logic comes here
             let row = DirectoryPointerRow;
             let offset = DirectoryPointerOffset;
             let dirStackTemp = DirectoryStack.map(e => e);
             let path = dirStackTemp[row].slice(0, offset + 1);
-            console.log('Taget: ', dirGrabbed);
-            console.log('Where: ', dir);
             // path.push(dirGrabbed);
             var grabbedDirectories = traceDirectories(path)
             path.pop();
-            moveToDirectory(dirGrabbed, grabbedDirectories, dir);
+            processDirectoryTree(dirGrabbed, grabbedDirectories[dirGrabbed], dir, false, true);
         }
     }
-    const moveToDirectory = (dir, dirObj, targetDir) => {
+    const processDirectoryTree = (dir = null, baseDir, targetDir, insertFlag = false, filterFLag = false, renameFlag = false) => {
         // directly mutate in directoryTree and set DirectoryStack
-        let baseDir = dirObj[dir];
-        //traversing the directory tree.
+        if (insertFlag) {
+            dir = Math.floor(Date.now() / 1000); // Assigning key to new folder
+        }
+        //traversing the directory tree.,
         function iter(directoryTreeArr) {
             Object.keys(directoryTreeArr).forEach(function (k) {
                 //move the directory to target context
                 if (k === targetDir) {
-                    directoryTreeArr[k]['child'][dir] = baseDir;
-                    return;
+                    if (insertFlag) {
+                        directoryTreeArr[k]['child'][dir] = baseDir;
+                        return;
+                    } else if (renameFlag) {
+                        directoryTreeArr[k]['name'] = dir;
+                        return;
+                    }
                 }
                 //remove original
-                if (k === dir) {
+                if (k === dir && filterFLag === true) {
                     delete directoryTreeArr[k];
                 }
                 if (directoryTreeArr[k] !== null && typeof directoryTreeArr[k] === 'object') {
@@ -221,15 +228,11 @@ const App = () => {
     }
 
 
-    //Create New Folder
-
-
 
 
     const getDirectoryNames = (traceArr) => {
         let tempTrack = [];
         let DirNames = [];
-        console.log(traceArr);
         for (let i = 0; i < traceArr.length; i++) {
             if (i === 0) {
                 tempTrack = directoryTree['home'][traceArr[i]]['child'];
@@ -249,13 +252,36 @@ const App = () => {
 
 
 
+    //Create New Folder
+    const handleOpenNewFolderModal = () => {
+        setCreateNewFolder(true);
+    }
+    const handleCloseNewFolderModal = () => {
+        setCreateNewFolder(false);
+    }
+    const createNewFolder = (name) => {
+        setCreateNewFolder(false);
+        let newObj = {
+            name: name,
+            child: {}
+        }
+        let target = DirectoryStack[DirectoryPointerRow][DirectoryPointerOffset]
+        processDirectoryTree(null, newObj, target, true, false);
+    }
 
 
-
+    //Rename directory Logic
+    const renameDirectory = (newName, target) => {
+        processDirectoryTree(newName, null, target, false, false, true);
+    }
 
     return (
         <div  >
-            <NewFolder />
+            <NewFolder
+                openModal={CreateNewFolder}
+                cancelCreate={handleCloseNewFolderModal}
+                createFolder={createNewFolder}
+            />
             <div className="wrapper">
                 <div className="sidebar">
 
@@ -273,6 +299,8 @@ const App = () => {
                         dragOnHandler={dragOnHandler}
                         dragEndHandler={dragEndHandler}
                         dragLeaveHandle={dragLeaveHandle}
+                        openModal={handleOpenNewFolderModal}
+                        renameDirectory={renameDirectory}
                     />
                 </div>
             </div>
