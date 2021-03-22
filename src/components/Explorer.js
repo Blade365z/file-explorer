@@ -73,7 +73,7 @@ const Explorer = (props) => {
             { Object.entries(DirList).length > 0 ? Object.entries(DirList).map((name, value) => {
                 if (props.searchKeyword) {
                     if (!DirList[name[0]]['name'].toLowerCase().includes(props.searchKeyword.toLowerCase()))
-                        return;
+                        return false;
                 }
                 count += 1;
                 return <div key={name[0]}>    <div className={props.selectedDirecrtory === name[0] ? "folder-large active" : "folder-large"}

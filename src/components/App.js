@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import FavouriteList from './FavouriteList'
 
 import './App.css';
@@ -43,7 +43,7 @@ const App = () => {
         document.addEventListener('contextmenu', function (e) {
             e.preventDefault();
         })
-    }, []);
+    }, [DirectoryStack]);
 
     useEffect(() => {
         getDirectoryNames(DirectoryStack[DirectoryPointerRow])

@@ -16,7 +16,7 @@ export const Nav = (props) => {
                 break;
             default:
                 return null;
-                break;
+               
         }
     }
     return (
