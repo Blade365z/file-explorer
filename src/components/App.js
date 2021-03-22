@@ -13,6 +13,7 @@ const App = () => {
     //Keep Track of the directory
     const [DirectoryStack, setDirectoryStack] = useState(Array(['17772']));
     const [CurrentDirectoryList, setCurrentDirectoryList] = useState([]);
+    const [Path, setPath] = useState([])
     const [DirectoryPointerOffset, setDirectoryPointerOffset] = useState(0);
     const [DirectoryPointerRow, setDirectoryPointerRow] = useState(0);
 
@@ -30,10 +31,11 @@ const App = () => {
         //     e.preventDefault();
         // })
     }, []);
+
     useEffect(() => {
         getDirectoryNames(DirectoryStack[DirectoryPointerRow])
+    }, [CurrentDirectoryList])
 
-    })
     const sideBarSelect = (tab) => {
         setselected(tab); //Selected SideBarTab
         exploreFolder(tab)
@@ -80,6 +82,7 @@ const App = () => {
             let temp = traceDirectories(dirStackTemp[row]);
             setCurrentDirectoryList(temp)
         }
+
     }
     const traceDirectories = (traceArr) => {
         let temp = [];
@@ -226,6 +229,7 @@ const App = () => {
     const getDirectoryNames = (traceArr) => {
         let tempTrack = [];
         let DirNames = [];
+        console.log(traceArr);
         for (let i = 0; i < traceArr.length; i++) {
             if (i === 0) {
                 tempTrack = directoryTree['home'][traceArr[i]]['child'];
@@ -233,11 +237,13 @@ const App = () => {
             } else {
                 if (tempTrack[traceArr[i]]) {
                     let dir = tempTrack[traceArr[i]]['name']
+                    tempTrack = tempTrack[traceArr[i]]['child']
                     DirNames.push(dir)
                 }
             }
         }
         DirNames = DirNames.slice(0, DirectoryPointerOffset + 1); // To filter directory path  only upto current Offset
+        setPath(DirNames);
         return DirNames;
     }
 
@@ -257,7 +263,7 @@ const App = () => {
                     <IcloudList />
                 </div>
                 <div className="pusher">
-                    <Nav onGoBack={handleGoBack} onGoForward={handleGoForward} currentPath={'heello'} />
+                    <Nav onGoBack={handleGoBack} onGoForward={handleGoForward} currentPath={Path} />
                     <Explorer
                         DraggedOverIcon={DraggedDirs.target}
                         directories={CurrentDirectoryList}
