@@ -97,7 +97,7 @@ const Explorer = (props) => {
             }) : <div style={{ textAlign: "center" }}><h3>Folder is Empty.</h3></div>
 
             }
-            {props.searchKeyword && count === 0 && <div>Not Found.</div>}
+            {props.searchKeyword && Object.entries(DirList).length > 0 && count===0 && <div style={{ textAlign: "center" }}><h3>Not Found.</h3></div>}
             {showMenu && <div className="menu" style={{ top: MenuY + 5, left: MenuX, position: 'absolute', backgroundColor: '#FFFF', color: 'black' }}>
                 <ul className="context-menu" >
                     <li className="item" onClick={() => { setShowRenameMenu(true) }}>

@@ -1,5 +1,5 @@
 import React from 'react'
-
+//I-Cloud icons
 const IcloudList = () => {
     const icloudList  = [
         {

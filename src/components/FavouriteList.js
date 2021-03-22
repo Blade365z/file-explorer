@@ -11,17 +11,17 @@ const FavouriteList = (props) => {
     const favourites  = [
         {
             name:'Air_Drop',
-            key:'17772213',
+            key:'6710',
             icon: 'cloud download icon'                     
         },
         {
             name:'Recents',
-            key:'177sda21372',
+            key:'6722',
             icon: 'clock outline icon'
         },
         {
             name:'Applications',
-            key:'17711172',
+            key:'6711',
             icon: 'desktop icon'
         },
         {

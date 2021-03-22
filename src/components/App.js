@@ -3,7 +3,7 @@ import FavouriteList from './FavouriteList'
 
 import './App.css';
 import IcloudList from './IcloudList';
-import { initalizeDirectoryStructure } from './helper';
+import { initalizeDirectoryStructure, updateDirectoryTree } from './helper';
 import { Nav } from './Nav';
 import Explorer from './Explorer';
 import NewFolder from './NewFolder';
@@ -29,6 +29,12 @@ const App = () => {
 
     const [CreateNewFolder, setCreateNewFolder] = useState(false);
     const [GridMode, setGridMode] = useState(true);
+
+
+    const [navigationButtonsEnabled, setnavigationButtonsEnabled] = useState({
+        back: false,
+        forward: false,
+    })
 
 
     useEffect(() => {
@@ -58,7 +64,10 @@ const App = () => {
 
     //Explore directory using key
     const exploreFolder = (dir) => {
-        
+        setnavigationButtonsEnabled({
+            back: true,
+            forward: navigationButtonsEnabled.forward
+        });
         if (directoryTree['home'][dir]) {
             //Means it is a home directory
             //Append the DirectoryStack
@@ -102,6 +111,7 @@ const App = () => {
         }
 
     }
+    //Trace Directory Hierarchy
     const traceDirectories = (traceArr) => {
         let temp = [];
         for (let i = 0; i < traceArr.length; i++) {
@@ -114,14 +124,24 @@ const App = () => {
         }
         return temp;
     }
+
+
+    //On Go Back Click
     const handleGoBack = () => {
         let row = DirectoryPointerRow;
         let offset = DirectoryPointerOffset;
         let dirStackTemp = DirectoryStack.map(e => e);
         if (offset === 0 && row === 0) {
-            console.log('Back Reached!')
+            setnavigationButtonsEnabled({
+                back: false,
+                forward: true
+            });
             //TODO::DISABLE BACK BUTTON
         } else {
+            setnavigationButtonsEnabled({
+                back: navigationButtonsEnabled.back,
+                forward: true
+            });
             if (row !== 0 && offset === 0) {
                 row -= 1;
                 setDirectoryPointerRow(row);
@@ -138,14 +158,22 @@ const App = () => {
             }
         }
     }
+    //On go Forward Click
     const handleGoForward = () => {
         let row = DirectoryPointerRow;
         let offset = DirectoryPointerOffset;
         let dirStackTemp = DirectoryStack.map(e => e);
         if (row === dirStackTemp.length - 1 && offset === dirStackTemp[row].length - 1) {
-            console.log('Forward Reached!')
+            setnavigationButtonsEnabled({
+                back: true,
+                forward: false
+            });
             //TODO::DISABLE FORWARD BUTTON
         } else {
+            setnavigationButtonsEnabled({
+                back: true,
+                forward: navigationButtonsEnabled.forward
+            });
             if (row !== dirStackTemp.length - 1 && offset === dirStackTemp[row].length - 1) {
                 row += 1;
                 setDirectoryPointerRow(row);
@@ -193,15 +221,18 @@ const App = () => {
             // path.push(dirGrabbed);
             var grabbedDirectories = traceDirectories(path)
             path.pop();
-            processDirectoryTree(dirGrabbed, grabbedDirectories[dirGrabbed], dir, false, true);
+            processDirectoryTree(dirGrabbed, grabbedDirectories[dirGrabbed], dir, true, true);
         }
     }
+
+
+    //Main heart of proccessing directories 
+    //INSERT,DELETE,RENAME,MOVE
     const processDirectoryTree = (dir = null, baseDir, targetDir, insertFlag = false, filterDuplicatesFLag = false, renameFlag = false, deleteOnlyFlag) => {
         // directly mutate in directoryTree and set DirectoryStack
-        if (insertFlag) {
+        if (insertFlag && !dir) {
             dir = Math.floor(Date.now() / 1000); // Assigning key to new folder
         }
-        console.log()
         //traversing the directory tree.,
         function iter(directoryTreeArr) {
             Object.keys(directoryTreeArr).forEach(function (k) {
@@ -216,10 +247,8 @@ const App = () => {
                     } else if (deleteOnlyFlag) {
                         delete directoryTreeArr[k];
                     }
-
                 }
                 //remove original
-
                 if (k === dir && filterDuplicatesFLag === true) {
                     delete directoryTreeArr[k];
                 }
@@ -232,6 +261,7 @@ const App = () => {
             return directoryTreeArr;
         }
         directoryTree = iter(directoryTree)
+        updateDirectoryTree(directoryTree)
     }
     const dragEndHandler = (e, dir) => {
         setDraggedDirs({
@@ -299,7 +329,7 @@ const App = () => {
     const deleteDirectory = (target) => {
         processDirectoryTree(null, null, target, false, false, false, true);
     }
-
+    //To change View
     const changeView = () => {
         setGridMode(!GridMode)
     }
@@ -325,11 +355,13 @@ const App = () => {
                 </div>
                 <div className="pusher" style={{ width: '100%' }}>
                     <Nav
+                    navigationButtonsEnabled={navigationButtonsEnabled}
                         onGoBack={handleGoBack}
                         onGoForward={handleGoForward}
                         currentPath={Path}
                         gridMode={GridMode}
                         changeView={changeView}
+                        openModal={handleOpenNewFolderModal}
                         handleSearch={handleSearch}
                     />
                     <Explorer
