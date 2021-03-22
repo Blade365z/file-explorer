@@ -25,6 +25,7 @@ body{
 }
 
 .list li div:hover{
+    border-radius:4px;
     background-color: rgb(53, 50, 50);
 }
 
