@@ -49,6 +49,7 @@ const App = () => {
     //To keep track of the directory path
     useEffect(() => {
         setSearchKeyword('')
+        setselectedSideBarTab(DirectoryStack[DirectoryPointerRow][0]); 
         let tempTrack = [];
         let DirNames = [];
         for (let i = 0; i < DirectoryStack[DirectoryPointerRow].length; i++) {
